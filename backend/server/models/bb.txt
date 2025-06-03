@@ -1,0 +1,11 @@
+rh: offre d'emploi
+liste li 9admo offre d'emploi
+list cv
+admin:dashboard,  les actions CRUD(users w offres, yra kolchy)
+user: lister loffre demploi(postili)
+    profile button
+hajet mochtarka
+(login sign up  w landing page w navbar)
+    
+
+
