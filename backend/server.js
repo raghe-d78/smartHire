@@ -14,7 +14,7 @@ app.use(cors("*")); // Allow all origins
 app.use(morgan('dev'));
 
 // Database connection with options
-const connectDB = async () => {
+const connectDB = async() => {
     try {
         const conn = await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
@@ -50,7 +50,7 @@ app.use((req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
