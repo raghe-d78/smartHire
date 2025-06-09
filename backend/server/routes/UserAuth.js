@@ -6,6 +6,10 @@ const { authenticate, authorize } = require('../middleware/Auth');
 // @route   POST api/auth/register
 // @desc    Register user
 // @access  Public
+// At the top of your router file:
+router.options('*', (req, res) => {
+    res.sendStatus(204);
+});
 router.post('/register', authController.register);
 
 // @route   POST api/auth/login

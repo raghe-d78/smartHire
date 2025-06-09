@@ -19,7 +19,7 @@ app.use(express.json());
 app.use('/api/candidates', candidateRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
-app.use('api/auth/', AuthRoutes);
+app.use('/api/auth/', AuthRoutes);
 
 
 // Test route
