@@ -6,7 +6,6 @@ const candidateRoutes = require('./routes/Condidate');
 const jobRoutes = require('./routes/Job');
 const applicationRoutes = require('./routes/Application');
 const AuthRoutes = require('./routes/UserAuth');
-
 const app = express();
 
 // Connexion à la base MongoDB
