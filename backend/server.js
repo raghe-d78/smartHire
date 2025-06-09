@@ -7,29 +7,41 @@ const morgan = require('morgan');
 // Initialize express app
 const app = express();
 
+// Enable CORS for all origins and handle credentials if needed
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Allow all origins, including mobile apps or curl with no origin
+        callback(null, true);
+    },
+    credentials: true, // Allow cookies and auth headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Preflight requests
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors("*")); // Allow all origins
 app.use(morgan('dev'));
 
-// Database connection with options
+// Connect to MongoDB
 const connectDB = async() => {
     try {
         const conn = await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-            socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
         });
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        console.log("MongoDB Connected: ${conn.connection.host}");
     } catch (error) {
         console.error('MongoDB connection error:', error);
-        process.exit(1); // Exit with failure
+        process.exit(1);
     }
 };
 
-// Connect to database
 connectDB();
 
 // Routes
@@ -52,5 +64,5 @@ app.use((req, res) => {
 // Start server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log("Server is running on port ${PORT}");
 });
