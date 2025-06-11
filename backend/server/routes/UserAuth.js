@@ -1,45 +1,23 @@
+// routes/UserAuth.js
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/AuthController');
 const { authenticate, authorize } = require('../middleware/Auth');
 
-// @route   POST api/auth/register
-// @desc    Register user
-// @access  Public
-// At the top of your router file:
-router.options('*', (req, res) => {
-    res.sendStatus(204);
-});
+// Allow preflight requests
+router.options('*', (req, res) => res.sendStatus(204));
+
+// Public routes
 router.post('/register', authController.register);
-
-// @route   POST api/auth/login
-// @desc    Login user
-// @access  Public
 router.post('/login', authController.login);
-
-// @route   POST api/auth/refresh-token
-// @desc    Refresh access token
-// @access  Public
 router.post('/refresh-token', authController.refreshToken);
 
-// @route   POST api/auth/logout
-// @desc    Logout user
-// @access  Private
+// Private routes
 router.post('/logout', authenticate, authController.logout);
-
-// @route   GET api/auth/me
-// @desc    Get current user
-// @access  Private
 router.get('/me', authenticate, authController.getCurrentUser);
-
-// @route   PUT api/auth/me
-// @desc    Update current user
-// @access  Private
 router.put('/me', authenticate, authController.updateCurrentUser);
 
-// @route   GET api/auth/admin/users
-// @desc    Get all users (admin only)
-// @access  Private/Admin
+// Admin-only route
 router.get('/admin/users', authenticate, authorize('admin'), authController.getAllUsers);
 
 module.exports = router;

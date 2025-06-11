@@ -1,34 +1,30 @@
+// middleware/auth.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Middleware to check if user is authenticated
-const authenticate = async (req, res, next) => {
+const authenticate = async(req, res, next) => {
     try {
-        // Get token from header
         const authHeader = req.header('Authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({ message: 'No token, authorization denied' });
         }
 
-        const token = authHeader.replace('Bearer ', '');
-
-        // Verify token
+        const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Get user from database
-        const user = await User.findById(decoded.id).select('-password');
+        const user = await User.findById(decoded.id).select('-password -refreshToken');
         if (!user) {
             return res.status(401).json({ message: 'User not found' });
         }
 
-        // Add user to request
         req.user = user;
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ message: 'Token expired' });
         }
-        res.status(401).json({ message: 'Token is not valid' });
+        res.status(401).json({ message: 'Invalid token', error: error.message });
     }
 };
 
@@ -40,8 +36,8 @@ const authorize = (...roles) => {
         }
 
         if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ 
-                message: `Role ${req.user.role} is not authorized to access this resource` 
+            return res.status(403).json({
+                message: `Role '${req.user.role}' is not authorized to access this resource`
             });
         }
 
