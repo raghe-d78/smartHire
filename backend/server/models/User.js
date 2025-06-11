@@ -1,28 +1,34 @@
+// models/User.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, 'Name is required']
     },
     email: {
         type: String,
-        required: true,
+        required: [true, 'Email is required'],
         unique: true,
         trim: true,
         lowercase: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+        match: [
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/,
+            'Please enter a valid email'
+        ]
     },
     password: {
         type: String,
         required: true,
         minlength: [8, 'Password must be at least 8 characters long'],
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 
-            'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character']
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/,
+            'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+        ]
     },
     role: {
         type: String,
-        enum: ['candidate', 'hr', 'admin'],
+        enum: ['candidate', 'rh', 'admin'],
         default: 'candidate'
     },
     refreshToken: {
@@ -37,7 +43,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// Add method to check if user has required role
+// Method to check user role
 userSchema.methods.hasRole = function(role) {
     if (this.role === 'admin') return true;
     return this.role === role;

@@ -1,24 +1,20 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Candidate = require('../models/CandidateModel');
 
 // Generate tokens
 const generateTokens = (user) => {
-    const accessToken = jwt.sign(
-        { id: user._id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+    const accessToken = jwt.sign({ id: user._id, role: user.role },
+        process.env.JWT_SECRET, { expiresIn: '1h' }
     );
 
-    const refreshToken = jwt.sign(
-        { id: user._id },
-        process.env.JWT_REFRESH_SECRET,
-        { expiresIn: '7d' }
+    const refreshToken = jwt.sign({ id: user._id },
+        process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' }
     );
 
     return { accessToken, refreshToken };
 };
-
 // User Registration
 exports.register = async(req, res) => {
     try {
@@ -29,8 +25,8 @@ exports.register = async(req, res) => {
             return res.status(400).json({ message: 'Name, email and password are required' });
         }
 
-        // Validate role if provided
-        if (role && !['candidate', 'hr', 'admin'].includes(role)) {
+        // Validate role if provided - FIXED: changed 'hr' to 'rh' to match User model
+        if (role && !['candidate', 'rh', 'admin'].includes(role)) {
             return res.status(400).json({ message: 'Invalid role' });
         }
 
@@ -39,7 +35,6 @@ exports.register = async(req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
-
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -53,8 +48,24 @@ exports.register = async(req, res) => {
         });
 
         await user.save();
-
-        // Generate tokens
+        // Register candidate profile
+        if (user.role === 'candidate') {
+            const candidateProfile = new Candidate({
+                userId: user._id,
+                cvUrl: '',
+                portfolio: '',
+                personalityInsights: '',
+                applications: [],
+                headline: '',
+                location: '',
+                experience: [],
+                skills: [],
+                about: '',
+                education: [],
+                certificates: []
+            });
+            await candidateProfile.save();
+        } // Generate tokens
         const { accessToken, refreshToken } = generateTokens(user);
 
         // Save refresh token
@@ -75,7 +86,6 @@ exports.register = async(req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 // User Login
 exports.login = async(req, res) => {
     try {
@@ -97,7 +107,6 @@ exports.login = async(req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
-
         // Generate tokens
         const { accessToken, refreshToken } = generateTokens(user);
 
@@ -120,7 +129,6 @@ exports.login = async(req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 // Refresh Token
 exports.refreshToken = async(req, res) => {
     try {
@@ -141,7 +149,6 @@ exports.refreshToken = async(req, res) => {
 
         // Generate new tokens
         const tokens = generateTokens(user);
-
         // Update user's refresh token
         user.refreshToken = tokens.refreshToken;
         await user.save();
@@ -154,7 +161,6 @@ exports.refreshToken = async(req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 // Logout
 exports.logout = async(req, res) => {
     try {
@@ -167,9 +173,7 @@ exports.logout = async(req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
-
-// Get Current User
+}; // Get Current User
 exports.getCurrentUser = async(req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password -refreshToken');
@@ -179,7 +183,6 @@ exports.getCurrentUser = async(req, res) => {
     }
 };
 
-// Update Current User
 exports.updateCurrentUser = async(req, res) => {
     try {
         const { name, email } = req.body;
@@ -196,9 +199,7 @@ exports.updateCurrentUser = async(req, res) => {
         }
 
         const user = await User.findByIdAndUpdate(
-            req.user.id,
-            { $set: updates },
-            { new: true }
+            req.user.id, { $set: updates }, { new: true }
         ).select('-password -refreshToken');
 
         res.json(user);
@@ -206,7 +207,6 @@ exports.updateCurrentUser = async(req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 // Get All Users (Admin only)
 exports.getAllUsers = async(req, res) => {
     try {
