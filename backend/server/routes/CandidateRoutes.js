@@ -1,13 +1,14 @@
-// routes/CandidateRoutes.js
 const express = require('express');
 const router = express.Router();
 const CandidateController = require('../controllers/CandidateController');
 const { authenticate } = require('../middleware/Auth');
 
-// Get candidate profile by ID
-router.get('/profile/:id', authenticate, CandidateController.getCandidateProfile);
+// Get candidate profile of the logged-in user
+router.get('/profile', authenticate, CandidateController.getCurrentCandidate);
+
+
 
 // Update candidate profile by ID
-router.put('/profile/:id', authenticate, CandidateController.updateCandidateProfile);
+router.put('/profile', authenticate, CandidateController.updateCurrentCandidate);
 
 module.exports = router;

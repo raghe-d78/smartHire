@@ -3,11 +3,10 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 
-const CandidateRoutes = require('./routes/CandidateRoutes');
 const JobRoutes = require('./routes/Job');
 const ApplicationRoutes = require('./routes/Application');
 const AuthRoutes = require('./routes/UserAuth');
-
+const candidateRoutes = require('./routes/CandidateRoutes');
 const app = express();
 
 // Connect to MongoDB
@@ -17,10 +16,12 @@ connectDB();
 app.use(express.json());
 
 // Routes
-app.use('/api/candidate', CandidateRoutes);
+
 app.use('/api/jobs', JobRoutes);
 app.use('/api/applications', ApplicationRoutes);
 app.use('/api/auth', AuthRoutes);
+app.use('/api/candidates', candidateRoutes);
+
 
 // Test route
 app.get('/', (req, res) => res.send('SmartHire API Running'));
