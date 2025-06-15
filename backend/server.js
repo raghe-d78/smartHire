@@ -46,6 +46,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', require('./server/routes/UserAuth'));
+app.use('/api/candidates', require('./server/routes/CandidateRoutes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -9,6 +9,12 @@ router.get('/profile', authenticate, CandidateController.getCurrentCandidate);
 
 
 // Update candidate profile by ID
-router.put('/profile', authenticate, CandidateController.updateCurrentCandidate);
+router.put('/profile', authenticate, CandidateController.updateProfile);
 
+router.get('/test', (req, res) => {
+    res.json({ message: 'Candidate route test works!' });
+});
+router.post('/:type-photo', authenticate, (req, res) => {
+    CandidateController.updatePhoto(req, res);
+});
 module.exports = router;
