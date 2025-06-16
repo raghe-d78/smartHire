@@ -25,6 +25,8 @@ app.options('*', cors(corsOptions)); // Preflight requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
+
 
 // Connect to MongoDB
 const connectDB = async() => {
@@ -47,6 +49,7 @@ connectDB();
 // Routes
 app.use('/api/auth', require('./server/routes/UserAuth'));
 app.use('/api/candidates', require('./server/routes/CandidateRoutes'));
+app.use('/api', require('./server/routes/UploadRoutes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

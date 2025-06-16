@@ -8,6 +8,10 @@ const candidateSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    profilePicture: {
+        publicId: String,
+        url: String
+    },
     cvUrl: String,
     portfolio: String,
     personalityInsights: String,
