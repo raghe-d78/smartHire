@@ -261,6 +261,33 @@ server/
 
 ---
 
+## Nouveaux Endpoints IA (Sprint 3+)
+
+### Analyse de CV/Profil
+POST `/api/ai/analyze-cv`
+- Analyse un texte de CV ou de profil (body: `{ text, jobId? }`)
+- Retourne :
+  - `skills` : Compétences extraites
+  - `experience` : Années et titres d'expérience
+  - `personality` : Indicateurs de personnalité
+  - `compatibility` : Score de compatibilité avec le poste (si `jobId` fourni)
+
+### Classement des Candidats pour une Offre
+GET `/api/ai/rank-candidates/:jobId`
+- Retourne la liste des candidats triés par score de compatibilité pour une offre donnée
+- Utilisé pour la page dédiée à l'analyse des profils postulants à une offre
+
+### KPIs & Analytics
+GET `/api/ai/kpis`
+- Retourne des métriques pour dashboards :
+  - Nombre total de candidatures, candidats, offres
+  - Score moyen de compatibilité
+  - Indicateur de diversité (nombre de localisations)
+
+> Ces endpoints nécessitent l'authentification (JWT) et sont conçus pour alimenter les pages d'analyse, de classement et les graphiques RH.
+
+---
+
 ## Critères de Réussite
 
 ### Exigences Techniques

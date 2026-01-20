@@ -7,6 +7,7 @@ const JobRoutes = require('./routes/Job');
 const ApplicationRoutes = require('./routes/Application');
 const AuthRoutes = require('./routes/UserAuth');
 const candidateRoutes = require('./routes/CandidateRoutes');
+const AiRoutes = require("./routes/AiRoutes");
 const app = express();
 
 // Connect to MongoDB
@@ -17,10 +18,11 @@ app.use(express.json());
 
 // Routes
 
-app.use('/api/jobs', JobRoutes);
-app.use('/api/applications', ApplicationRoutes);
-app.use('/api/auth', AuthRoutes);
-app.use('/api/candidates', candidateRoutes);
+app.use("/api/jobs", JobRoutes);
+app.use("/api/applications", ApplicationRoutes);
+app.use("/api/auth", AuthRoutes);
+app.use("/api/candidates", candidateRoutes);
+app.use("/api/ai", AiRoutes);
 
 
 // Test route

@@ -177,7 +177,17 @@ exports.logout = async(req, res) => {
 exports.getCurrentUser = async(req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password -refreshToken');
-        res.json(user);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        // Return id as 'id' (not '_id') for client compatibility
+        res.json({
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt,
+        });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
