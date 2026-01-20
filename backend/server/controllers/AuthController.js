@@ -177,6 +177,7 @@ exports.logout = async(req, res) => {
 exports.getCurrentUser = async(req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password -refreshToken');
+<<<<<<< HEAD
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -188,6 +189,9 @@ exports.getCurrentUser = async(req, res) => {
           role: user.role,
           createdAt: user.createdAt,
         });
+=======
+        res.json(user);
+>>>>>>> 86dd29be17044e90d3365fbe5ea4ec20688f2573
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }

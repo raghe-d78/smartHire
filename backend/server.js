@@ -50,9 +50,12 @@ connectDB();
 app.use('/api/auth', require('./server/routes/UserAuth'));
 app.use('/api/candidates', require('./server/routes/CandidateRoutes'));
 app.use('/api', require('./server/routes/UploadRoutes'));
+<<<<<<< HEAD
 app.use("/api/ai", require("./server/routes/AiRoutes"));
 app.use("/api/jobs", require("./server/routes/Job"));
 app.use("/api/applications", require("./server/routes/Application"));
+=======
+>>>>>>> 86dd29be17044e90d3365fbe5ea4ec20688f2573
 
 // Error handling middleware
 app.use((err, req, res, next) => {
